@@ -1,5 +1,7 @@
 """
 This script auto-inlines images, Javascript, and CSS.
+
+It also resolves iframes to depth 1.
 """
 import base64
 import functools
@@ -44,11 +46,16 @@ def script_get_source_string(base_uri: str, old_src: str):
         ctx.log.error(f"HTTPError for {old_src}: {e}")
         return f'/* Error fetching {old_src}: {e} */'
 
-    return resp.content.decode()
+    return resp.text
 
 
 def css_get_source_string(base_uri: str, old_src: str):
     # currently same as script, but separate function in case that might change later
+    return script_get_source_string(base_uri, old_src)
+
+
+def iframe_get_source_string(base_uri: str, old_src: str):
+    # TODO: recursively resolve iframes
     return script_get_source_string(base_uri, old_src)
 
 
@@ -66,6 +73,7 @@ def response(flow: http.HTTPFlow) -> None:
                 link['rel'][0] == 'stylesheet' and
                 link.get('href')
         ]
+        iframes = [iframe for iframe in html.findAll('iframe') if iframe.get('src')]
 
         num_workers = MAX_WORKERS or (len(scripts) + len(images) + len(styles))
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -80,6 +88,10 @@ def response(flow: http.HTTPFlow) -> None:
             style_results = [
                 executor.submit(functools.partial(css_get_source_string, original_base_uri), style['href'])
                 for style in styles
+            ]
+            iframe_results = [
+                executor.submit(functools.partial(iframe_get_source_string, original_base_uri), iframe['src'])
+                for iframe in iframes
             ]
 
             for (image, result) in zip(images, image_results):
@@ -99,7 +111,12 @@ def response(flow: http.HTTPFlow) -> None:
                     style.insert_after(new_style)
                     style.decompose()
 
-        flow.response.content = str(html).encode("utf8")
+            for (iframe, result) in zip(iframes, iframe_results):
+                r = result.result()
+                if r:
+                    iframe['srcdoc'] = r
+
+        flow.response.text = str(html)
 
     new_base_uri = f"{flow.request.scheme}://{ctx.options.listen_host}:{ctx.options.listen_port}"
     flow.replace(original_base_uri, new_base_uri)

@@ -1,11 +1,11 @@
 .PHONY: run run-dump run-proxy clean
 
 run-dump:
-	mitmdump --set confdir=./mitmconf
+	-mitmdump --set confdir=./mitmconf
 
 run: run-proxy
 run-proxy:
-	mitmproxy --set confdir=./mitmconf
+	-mitmproxy --set confdir=./mitmconf
 
 venv:
 	virtualenv -p python3 venv

@@ -23,6 +23,10 @@ logger = logging.getLogger(__name__)
 MAX_DEPTH = 3
 
 
+# Disable cert validation; needed since our localhost certs are self-signed
+requests.get = functools.partial(requests.get, verify=False)
+
+
 def img_retrieve_source_base64(base_uri: str, old_src: str):
     try:
         resp = requests.get(old_src)

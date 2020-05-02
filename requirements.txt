@@ -1,3 +1,7 @@
+# ssdr reverse proxy dependencies
 beautifulsoup4==4.9.0
 mitmproxy==5.1.1
 requests==2.23.0
+
+# website dependencies
+Quart==0.11.5

@@ -1,0 +1,4 @@
+keyfile = "web/key.pem"
+certfile = "web/cert.pem"
+bind = "localhost:5000"
+alpn_protocols = ["http/1.1"]

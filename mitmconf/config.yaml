@@ -7,10 +7,13 @@ listen_port: 8080
 # Mode can be "regular", "transparent", "socks5", "reverse:SPEC", or
 # "upstream:SPEC". For reverse and upstream proxy modes, SPEC is host
 # specification in the form of "http[s]://host[:port]". Type str.
-mode: reverse:https://localhost:5000
+mode: reverse:https://localhost:5011
 
 # Execute a script. Type sequence of str.
 scripts: ["ssdr.py"]
 
 # Disable cert validation; needed since our localhost certs are self-signed
 ssl_insecure: true
+
+# Allow access from global IPs
+block_global: false

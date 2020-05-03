@@ -15,7 +15,7 @@ web2: venv certs
 
 web2-no-push: venv certs
 	. venv/bin/activate; \
-	hypercorn --config web/hypercorn-http2.toml web/run:app
+	hypercorn --config web/hypercorn-http2.toml --bind=0.0.0.0:5030 web/run:app
 
 web11: venv certs
 	. venv/bin/activate; \

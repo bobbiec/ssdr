@@ -1,5 +1,10 @@
-{% block content %}
-Depth {{depth}}
+<html>
+  <body>
+    Depth {{depth}}
 
-<iframe style="height: 100%; width: 100%" src="{{depth-1 if depth > 0 else '/'}}"/>
-{% endblock %}
+    <iframe
+      style="height: 100%; width: 100%;"
+      src="{{depth-1 if depth > 0 else '/'}}"
+    />
+  </body>
+</html>

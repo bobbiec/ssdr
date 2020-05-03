@@ -11,6 +11,10 @@ run-proxy: venv
 
 web2: venv certs
 	. venv/bin/activate; \
+	SERVER_PUSH=1 hypercorn --config web/hypercorn-http2.toml web/run:app
+
+web2-no-push: venv certs
+	. venv/bin/activate; \
 	hypercorn --config web/hypercorn-http2.toml web/run:app
 
 web11: venv certs

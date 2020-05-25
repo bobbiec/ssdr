@@ -1,7 +1,7 @@
 """
 This script auto-inlines images, Javascript, and CSS.
 
-It also resolves iframes to depth MAX_DEPTH (3).
+It also resolves iframes to depth MAX_DEPTH (3 by default).
 """
 import base64
 import functools
@@ -20,6 +20,10 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+# Configurable max-depth
+# This is a simple way to avoid infinite loops, but it also limits the
+# performance improvement to a factor of MAX_DEPTH. This could be solved
+# by implementing a cycle-checker.
 MAX_DEPTH = 3
 
 
@@ -69,6 +73,7 @@ CSS_URL_REGEX = re.compile(r"url\(([\'\"]?)(?!(https?://|data:|#))([^\'\"\s\)]*)
 
 
 def absolutize_css_urls(base_uri: str, match: re.Match) -> str:
+    # CSS URLs are relative to the CSS document, so special absolutizing is needed
     logger.debug(f'replacing {match.group(0)} with url({match.group(1)}{base_uri}/{match.group(3)}{match.group(1)})')
     return f'url({match.group(1)}{base_uri}/{match.group(3)}{match.group(1)})'
 
@@ -178,12 +183,6 @@ def inline_html(html: BeautifulSoup, base_uri: str, executor: ThreadPoolExecutor
 
 class SSDR:
     max_workers = 6  # same as Firefox default
-
-    # def __init__(self):
-    #     self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
-
-    # def __del__(self):
-    #     self.executor.shutdown(wait=False)
 
     @concurrent
     def response(self, flow: http.HTTPFlow) -> None:

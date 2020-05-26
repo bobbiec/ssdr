@@ -6,8 +6,10 @@ It is implemented as an [mitmproxy](https://mitmproxy.org/) addon in
 [ssdr.py](ssdr.py). The [web](web) directory contains a toy webserver which
 allows generating pages with various depths of dependencies.
 
-This project was done at CMU as part of Dave O' Hallaron's excellent course
-Internet Services (18-845).
+See also: reflections on
+[working on this project](https://bobbiechen.com/blog/2020/5/26/the-making-of-ssdr),
+and on [the course overall](https://bobbiechen.com/blog/2020/5/25/reflections-on-18-845-internet-services)
+(Dave O'Hallaron's excellent 18-845 Internet Services).
 
 * [Motivation](#motivation)
 * [Paper Summary](#paper-summary)

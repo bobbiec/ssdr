@@ -1,6 +1,6 @@
 # ssdr reverse proxy dependencies
 beautifulsoup4==4.9.0
-mitmproxy==5.1.1
+mitmproxy==7.0.3
 requests==2.23.0
 
 # website dependencies
